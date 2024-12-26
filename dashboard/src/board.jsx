@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AddTaskModal from './components/taskModal';
 
 // Load tasks from localStorage
 const loadSavedTasks = () => {
@@ -16,13 +17,15 @@ const loadSavedTasks = () => {
 const Dashboard = () => {
   // State for all tasks
   const [tasks, setTasks] = useState(loadSavedTasks());
+  // State for modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Save tasks to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  // Function to add a new task (we'll implement this next)
+  // Function to add a new task
   const addTask = (title, description) => {
     const newTask = {
       id: Date.now(),
@@ -38,9 +41,14 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <header className="mb-8">
+      <header className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">Task Dashboard</h1>
-        {/* We'll add the add task button and filter controls here later */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          Add Task
+        </button>
       </header>
 
       {/* Task columns container */}
@@ -84,6 +92,12 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      <AddTaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddTask={addTask}
+      />
     </div>
   );
 };
